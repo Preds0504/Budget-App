@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Budget App</title>
+        <meta name="description" content="A simple budgeting app">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <h1>Budget App</h1>
+        </header>
+        <main>
+            <section id="budget-summary">
+                <h2>Budget Summary</h2>
+                <p>Total Income: $0</p>
+                <p>Total Expenses: $0</p>
+                <p>Balance: $0</p>
+            </section>
+            <section id="add-transaction">
+                <h2>Add Transaction</h2>
+                <form>
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description" required>
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" name="amount" required>
+                    <button type="submit">Add</button>
+                </form>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2023 Budget App</p>
+        </footer>
+        <script src="app.js" async defer></script>
+    </body>
+</html>
