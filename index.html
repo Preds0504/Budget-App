@@ -13,31 +13,57 @@
             <h1>Budge-Budge</h1>
         </header>
         <main>
+            
+            <section id="monthlyBudget" class="basic right">
+                <h2 id="monthlyBudgetHeader" class="monthlyBudgetHeader">Monthly Budget</h2>
+                <p id="income">Income: $0</p>
+                <p id="housing">Housing: $0</p>
+                <p id="groceriesGas">Grocery/Gas: $0</p>
+                <p id="entertainment">Entertainment: $0</p>
+                <p id="eatingOut">Eating Out: $0</p>
+                <p id="medical">Medical: $0</p>
+                <p id="utilities">Utilities: $0</p>
+                <p id="miscellaneous">Miscellaneous: $0</p>
+            </section>
+           
+            <section id="add-transaction" class="basic left">
+                <h2>Add Transaction</h2>
+                <form id="transactionForm">
+                    <label for ="transactionDate">Date:</label>
+                    <input type="text" id="transactionDate" name="transactionDate" required>
+                    <label for="transactionCategory">Category:</label>
+                    <select id="transactionCategory" name="transactionCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="income">Income</option>
+                        <option value="housing">Housing</option>
+                        <option value="groceriesGas">Groceries/Gas</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="eatingOut">Eating Out</option>
+                        <option value="medical">Medical</option>
+                        <option value="utilities">Utilities</option>
+                        <option value="miscellaneous">Miscellaneous</option>
+                    </select>
+                    <label for="transactionDescription">Description:</label>
+                    <input type="text" id="transactionDescription" name="transactionDescription" required>
+                    <label for="transactionAmount">Amount:</label>
+                    <input type="number" id="transactionAmount" name="transactionAmount" required>
+                    <button type="submit">Add</button>
+                </form>
+            </section>
+            <section id="transaction-history" class="basic left">
+                <h2>Transaction History</h2>
+                <ol id="transactionList">
+                    <li>Transaction 1</li>
+                    <li>Transaction 2</li>
+                    <li>Transaction 3</li>
+                </ol>
+            </section>
             <section id="budget-summary" class="basic right">
                 <h2>Budget Summary</h2>
                 <p id="incomeDisplay">Total Income: $0</p>
                 <p id="expenseDisplay">Total Expenses: $0</p>
                 <p id="balanceDisplay">Balance: $0</p>
                 <button type="button" id="clearBtn">Clear</button>
-            </section>
-            <section id="add-transaction" class="basic left">
-                <h2>Add Transaction</h2>
-                <h3>Source of Income</h3>
-                <form id="incomeForm">
-                    <label for="IncomeDescription">Description:</label>
-                    <input type="text" id="IncomeDescription" name="IncomeDescription" required>
-                    <label for="IncomeAmount">Amount:</label>
-                    <input type="number" id="IncomeAmount" name="IncomeAmount" required>
-                    <button type="submit">Add</button>
-                </form>
-                <h3>Expenses</h3>
-                <form id="expenseForm">
-                    <label for="ExpenseDescription">Description:</label>
-                    <input type="text" id="ExpenseDescription" name="ExpenseDescription" required>
-                    <label for="ExpenseAmount">Amount:</label>
-                    <input type="number" id="ExpenseAmount" name="ExpenseAmount" required>
-                    <button type="submit">Add</button>
-                </form>
             </section>
         </main>
         <footer>

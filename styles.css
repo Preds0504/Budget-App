@@ -44,10 +44,15 @@ main {
     background-color: #a4c3b2;
 }
 .left {
-    min-width: 40%;
+    min-width: 70%;
+    min-height: 400px;
     float: left;
 }
 .right {
-    min-width: 40%;
+    min-width: 30%;
+    min-height: 400px;
     float: right;
+}
+.basic {
+    padding-bottom: 20pt;
 }
