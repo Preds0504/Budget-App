@@ -1,0 +1,53 @@
+@font-face {
+    font-family: 'SimpleFont';
+    src: url('fonts/Simple_tfb.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1 {
+    font-family: 'SimpleFont';
+    font-size: 24px;          /* Larger font size for emphasis */
+    color: #333;              /* Dark text color */
+    margin: 10px 0;           /* Vertical spacing */
+    padding: 5px 15px 15px 10px;        /* Padding for inner spacing */
+    background-color: #a4c3b2; /* Light background color */
+}
+
+footer {
+    min-width: 100%;
+}
+
+/* Ensure the html and body take up full height */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Make body a flex container to position children vertically */
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #6b9080;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Let main content expand to fill available space */
+main {
+    flex: 1;
+}
+
+.basic {
+    background-color: #a4c3b2;
+}
+.left {
+    min-width: 40%;
+    float: left;
+}
+.right {
+    min-width: 40%;
+    float: right;
+}
