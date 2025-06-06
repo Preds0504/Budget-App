@@ -169,4 +169,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //TODO remove transaction in the history
 //TODO Incorrect values for all or formatted values only for date
-//TODO API/BACKEND/GRAPH/DATABASE
+//TODO API+BACKEND(Node.js + Express)/GRAPH(Chart.js)/DATABASE
+//TODO Transition some front-end to react or typescript

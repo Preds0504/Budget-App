@@ -1,0 +1,24 @@
+{
+  "name": "budget-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Preds0504/Budget-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Preds0504/Budget-App/issues"
+  },
+  "homepage": "https://github.com/Preds0504/Budget-App#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
