@@ -11,6 +11,8 @@ let eatingOutTotal     = parseFloat(localStorage.getItem('eatingOutTotal'))  || 
 let medicalTotal    = parseFloat(localStorage.getItem('medicalTotal'))  || 0;
 let utilitiesTotal     = parseFloat(localStorage.getItem('utilitiesTotal'))  || 0;
 let miscellaneousTotal  = parseFloat(localStorage.getItem('miscellaneousTotal')) || 0;
+//This is for the transactions that are displayed in the history
+let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 // This function calculates the total expenses and balance, then updates their displays.
 function updateCalculations() {
     // Sum all expense-related totals
@@ -24,6 +26,15 @@ function updateCalculations() {
     // If you have a dedicated expense element on your page, you can update it too:
     document.getElementById('expenseDisplay').textContent = 'Total Expenses: $' + expenseTotal;
     document.getElementById('balanceDisplay').textContent = 'Balance: $' + balance;
+    // Update individual category displays
+    document.getElementById('income').textContent = 'Income: $' + incomeTotal;
+    document.getElementById('housing').textContent = 'Housing: $' + housingTotal;
+    document.getElementById('groceriesGas').textContent = 'Grocery/Gas: $' + groceriesGasTotal;
+    document.getElementById('entertainment').textContent = 'Entertainment: $' + entertainmentTotal;
+    document.getElementById('eatingOut').textContent = 'Eating Out: $' + eatingOutTotal;
+    document.getElementById('medical').textContent = 'Medical: $' + medicalTotal;
+    document.getElementById('utilities').textContent = 'Utilities: $' + utilitiesTotal;
+    document.getElementById('miscellaneous').textContent = 'Miscellaneous: $' + miscellaneousTotal;
 }
 function getTransactionFromForm() {
     return {
@@ -129,12 +140,33 @@ clearBtn.addEventListener('click', function(e) {
     document.getElementById('expenseDisplay').textContent = 'Total Expenses: $0';
     document.getElementById('incomeDisplay').textContent = 'Total Income: $0';
     document.getElementById('balanceDisplay').textContent = 'Balance: $0';
+    //Clear history
+    transactions = [];
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+    renderTransactionHistory();
 });
 
 function addTransactionhistory(transaction) {
-
+    transactions.push(transaction);
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+    renderTransactionHistory();
 }
-//TODO With this history Ill need to undo transaction history and recalculate values
+function renderTransactionHistory() {
+    const transactionList = document.getElementById('transactionList'); 
+    transactionList.innerHTML = '';
+    transactions.forEach((transaction, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${transaction.date} | ${transaction.category} | ${transaction.description} | $${transaction.amount}`;
+        transactionList.appendChild(li);
+    });
 
-    
+} 
 
+document.addEventListener('DOMContentLoaded', function() {
+    renderTransactionHistory();
+    updateCalculations();
+});
+
+//TODO remove transaction in the history
+//TODO Incorrect values for all or formatted values only for date
+//TODO API/BACKEND/GRAPH/DATABASE
