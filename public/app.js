@@ -1,41 +1,141 @@
 const transactionForm = document.getElementById('transactionForm');
 const clearBtn = document.getElementById('clearBtn');
-
-let incomeTotal = parseFloat(localStorage.getItem('incomeTotal')) || 0;
-let expenseTotal = parseFloat(localStorage.getItem('expenseTotal')) || 0;
-let balance = parseFloat(localStorage.getItem('balance')) || 0;
-let housingTotal   = parseFloat(localStorage.getItem('housingTotal'))     || 0;
-let groceriesGasTotal   = parseFloat(localStorage.getItem('groceriesGasTotal')) || 0;
-let entertainmentTotal  = parseFloat(localStorage.getItem('entertainmentTotal')) || 0;
-let eatingOutTotal     = parseFloat(localStorage.getItem('eatingOutTotal'))  || 0;
-let medicalTotal    = parseFloat(localStorage.getItem('medicalTotal'))  || 0;
-let utilitiesTotal     = parseFloat(localStorage.getItem('utilitiesTotal'))  || 0;
-let miscellaneousTotal  = parseFloat(localStorage.getItem('miscellaneousTotal')) || 0;
-//This is for the transactions that are displayed in the history
-let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-// This function calculates the total expenses and balance, then updates their displays.
-function updateCalculations() {
-    // Sum all expense-related totals
-    expenseTotal = housingTotal + groceriesGasTotal + entertainmentTotal + eatingOutTotal + medicalTotal + utilitiesTotal + miscellaneousTotal;
-    
-    // Calculate balance (income minus total expenses)
-    balance = incomeTotal - expenseTotal;
-    
-    // Update the display for income, expenses, and balance
-    document.getElementById('incomeDisplay').textContent = 'Total Income: $' + incomeTotal;
-    // If you have a dedicated expense element on your page, you can update it too:
-    document.getElementById('expenseDisplay').textContent = 'Total Expenses: $' + expenseTotal;
-    document.getElementById('balanceDisplay').textContent = 'Balance: $' + balance;
-    // Update individual category displays
-    document.getElementById('income').textContent = 'Income: $' + incomeTotal;
-    document.getElementById('housing').textContent = 'Housing: $' + housingTotal;
-    document.getElementById('groceriesGas').textContent = 'Grocery/Gas: $' + groceriesGasTotal;
-    document.getElementById('entertainment').textContent = 'Entertainment: $' + entertainmentTotal;
-    document.getElementById('eatingOut').textContent = 'Eating Out: $' + eatingOutTotal;
-    document.getElementById('medical').textContent = 'Medical: $' + medicalTotal;
-    document.getElementById('utilities').textContent = 'Utilities: $' + utilitiesTotal;
-    document.getElementById('miscellaneous').textContent = 'Miscellaneous: $' + miscellaneousTotal;
+// Initialize totals for transactions
+let incomeTotal = 0;
+let expenseTotal = 0;
+let housingTotal = 0;
+let groceriesGasTotal = 0;
+let entertainmentTotal = 0;
+let eatingOutTotal = 0;
+let medicalTotal = 0;
+let utilitiesTotal = 0;
+let miscellaneousTotal = 0;
+let balance = 0;
+// The transactions array is populated by API calls.
+let transactions = [];
+/**
+ * Notes for programmer:
+ * When loadTransactions() is called, it makes an HTTP GET request to '/api/transactions'.
+ * When the server responds, the response is parsed as JSON.
+ * Once parsed, the data is stored in the transactions array.
+ * Then, renderTransactionHistory() is called to update the transaction list on the page.
+ * calculateTotals() is called to update income, expense, and balance displays.
+ * If any error occurs along the way, it is caught and logged.
+ */
+function loadTransactions() {
+    //Makes a HTTP request and the argument saying the endpoint of the server
+    //Returns a promise that will eventually resolve to a response object
+    fetch('/api/transactions')
+        //When fetch resolves, will take in reponse.
+        //thee response.json is a method that reads the response stream and 
+        //parses it to JSON data.
+        //Will return a promise
+        .then(response => response.json())
+        //It waits for the JSON data to be parsed.
+        //The arrow function here accepts a parameter named data. 
+        // This is the parsed JSON—hopefully, an array of transaction objects.
+        .then(data => {
+            transactions = data;
+            renderTransactionHistory();
+            calculateTotals();
+        })
+        .catch(error => console.error('Error loading transactions:', error));
 }
+/**
+ * Will remove the transaction from given the id
+ * @param id the id of the transaction to be deleted
+ */
+function deleteTransaction(id) {
+    fetch(`/api/transactions/${id}`, {
+       method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message); // Log confirmation
+        // Reload transactions from API after deletion:
+        loadTransactions();
+    })
+    .catch(error => console.error('Error deleting transaction:', error));
+}
+/**
+ * Will update the total transactions with the new one
+ * @param transaction The transaction to add from the form
+ */
+function addTransactionhistory(transaction) {
+    fetch('/api/transactions', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(transaction)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Optionally push the newly added transaction into your array
+        loadTransactions();
+    })
+    .catch(error => console.error('Error adding transaction:', error));
+}
+/**
+ * Will calculate all the data help in the transaction objects
+ * Then it will display all the new data
+ */
+function calculateTotals() {
+    // Reset totals
+    incomeTotal = expenseTotal = housingTotal = groceriesGasTotal = entertainmentTotal = eatingOutTotal = medicalTotal = utilitiesTotal = miscellaneousTotal = 0;
+    // Calculate totals from all transactions
+    transactions.forEach(transaction => {
+      // You might adjust this based on how you structure your data
+      if (transaction.category === 'income') {
+          incomeTotal += transaction.amount;
+      } else {
+          // Assuming these are expenses:
+          switch (transaction.category) {
+            case 'housing':
+              housingTotal += transaction.amount;
+              break;
+            case 'groceriesGas':
+              groceriesGasTotal += transaction.amount;
+              break;
+            case 'entertainment':
+              entertainmentTotal += transaction.amount;
+              break;
+            case 'eatingOut':
+              eatingOutTotal += transaction.amount;
+              break;
+            case 'medical':
+              medicalTotal += transaction.amount;
+              break;
+            case 'utilities':
+              utilitiesTotal += transaction.amount;
+              break;
+            case 'miscellaneous':
+              miscellaneousTotal += transaction.amount;
+              break;
+            default:
+              break;
+          }
+          expenseTotal += transaction.amount;
+      }
+    });
+  
+    balance = incomeTotal - expenseTotal;
+      // Update the display for income, expenses, and balance
+      document.getElementById('incomeDisplay').textContent = 'Total Income: $' + incomeTotal;
+      document.getElementById('expenseDisplay').textContent = 'Total Expenses: $' + expenseTotal;
+      document.getElementById('balanceDisplay').textContent = 'Balance: $' + balance;
+      // Update individual category displays
+      document.getElementById('income').textContent = 'Income: $' + incomeTotal;
+      document.getElementById('housing').textContent = 'Housing: $' + housingTotal;
+      document.getElementById('groceriesGas').textContent = 'Grocery/Gas: $' + groceriesGasTotal;
+      document.getElementById('entertainment').textContent = 'Entertainment: $' + entertainmentTotal;
+      document.getElementById('eatingOut').textContent = 'Eating Out: $' + eatingOutTotal;
+      document.getElementById('medical').textContent = 'Medical: $' + medicalTotal;
+      document.getElementById('utilities').textContent = 'Utilities: $' + utilitiesTotal;
+      document.getElementById('miscellaneous').textContent = 'Miscellaneous: $' + miscellaneousTotal;
+}
+/**
+ * Will read in the transaction data submitted from the user
+ * @returns transaction the object that holds all the transaction values
+ */
 function getTransactionFromForm() {
     return {
         date: document.getElementById('transactionDate').value,
@@ -44,113 +144,11 @@ function getTransactionFromForm() {
         amount: parseFloat(document.getElementById('transactionAmount').value)
     };
 }
-//Event listener for the income submission
-transactionForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const transaction = getTransactionFromForm();
-    addTransactionhistory(transaction);
-    if (isNaN(transaction.amount)) {
-        return;
-    }
-    switch (transaction.category) {
-        case 'income':
-            incomeTotal += transaction.amount;
-            localStorage.setItem('incomeTotal', incomeTotal);
-            document.getElementById('income').textContent = 'Income: $' + incomeTotal;
-            break;
-        case 'housing':
-            housingTotal += transaction.amount;
-            localStorage.setItem('housingTotal', housingTotal);
-            document.getElementById('housing').textContent = 'Housing: $' + housingTotal;
-            break;
-        case 'groceriesGas':
-            groceriesGasTotal += transaction.amount;
-            localStorage.setItem('groceriesGasTotal', groceriesGasTotal);
-            document.getElementById('groceriesGas').textContent = 'Grocery/Gas: $' + groceriesGasTotal;
-            break;
-        case 'entertainment':
-            entertainmentTotal += transaction.amount;
-            localStorage.setItem('entertainmentTotal', entertainmentTotal);
-            document.getElementById('entertainment').textContent = 'Entertainment: $' + entertainmentTotal;
-            break;
-        case 'eatingOut':
-            eatingOutTotal += transaction.amount;
-            localStorage.setItem('eatingOutTotal', eatingOutTotal);
-            document.getElementById('eatingOut').textContent = 'Eating Out: $' + eatingOutTotal;
-            break;
-        case 'medical':
-            medicalTotal += transaction.amount;
-            localStorage.setItem('medicalTotal', medicalTotal);
-            document.getElementById('medical').textContent = 'Medical: $' + medicalTotal;
-            break;
-        case 'utilities':
-            utilitiesTotal += transaction.amount;
-            localStorage.setItem('utilitiesTotal', utilitiesTotal);
-            document.getElementById('utilities').textContent = 'Utilities: $' + utilitiesTotal;
-            break;
-        case 'miscellaneous':
-            miscellaneousTotal += transaction.amount;
-            localStorage.setItem('miscellaneousTotal', miscellaneousTotal);
-            document.getElementById('miscellaneous').textContent = 'Miscellaneous: $' + miscellaneousTotal;
-            break;
-        default:
-            console.log("No valid category selected.");
-    }
-    updateCalculations();
-    // After processing, clear the form fields:
-    transactionForm.reset();
-});
-// Example clear button event listener to reset all totals
-clearBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    // Reset all totals to 0
-    incomeTotal = 0;
-    expenseTotal = 0;
-    balance = 0;
-    housingTotal = 0;
-    groceriesGasTotal = 0;
-    entertainmentTotal = 0;
-    eatingOutTotal = 0;
-    medicalTotal = 0;
-    utilitiesTotal = 0;
-    miscellaneousTotal = 0;
-    // Update localStorage with the reset values
-     // Update localStorage for each total
-     localStorage.setItem('incomeTotal', incomeTotal);
-     localStorage.setItem('expenseTotal', expenseTotal);
-     localStorage.setItem('balance', balance);
-     localStorage.setItem('housingTotal', housingTotal);
-     localStorage.setItem('groceriesGasTotal', groceriesGasTotal);
-     localStorage.setItem('entertainmentTotal', entertainmentTotal);
-     localStorage.setItem('eatingOutTotal', eatingOutTotal);
-     localStorage.setItem('medicalTotal', medicalTotal);
-     localStorage.setItem('utilitiesTotal', utilitiesTotal);
-     localStorage.setItem('miscellaneousTotal', miscellaneousTotal);
-    
-    // Reset all display elements to show $0 totals
-    document.getElementById('income').textContent = 'Income: $0';
-    document.getElementById('housing').textContent = 'Housing: $0';
-    document.getElementById('groceriesGas').textContent = 'Grocery/Gas: $0';
-    document.getElementById('entertainment').textContent = 'Entertainment: $0';
-    document.getElementById('eatingOut').textContent = 'Eating Out: $0';
-    document.getElementById('medical').textContent = 'Medical: $0';
-    document.getElementById('utilities').textContent = 'Utilities: $0';
-    document.getElementById('miscellaneous').textContent = 'Miscellaneous: $0';   
-    // If you have separate display elements for total expenses and balance, update those as well:
-    document.getElementById('expenseDisplay').textContent = 'Total Expenses: $0';
-    document.getElementById('incomeDisplay').textContent = 'Total Income: $0';
-    document.getElementById('balanceDisplay').textContent = 'Balance: $0';
-    //Clear history
-    transactions = [];
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-    renderTransactionHistory();
-});
 
-function addTransactionhistory(transaction) {
-    transactions.push(transaction);
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-    renderTransactionHistory();
-}
+
+/**
+ * This will list all the transactions by modifying the DOM elements
+ */
 function renderTransactionHistory() {
     const transactionList = document.getElementById('transactionList'); 
     transactionList.innerHTML = '';
@@ -161,13 +159,42 @@ function renderTransactionHistory() {
     });
 
 } 
-
-document.addEventListener('DOMContentLoaded', function() {
-    renderTransactionHistory();
-    updateCalculations();
+// Example clear button event listener to reset all totals
+clearBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    fetch('/api/transactions', {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+         console.log(data.message);  // Logs: "All transactions removed"
+         // Reset your totals
+         incomeTotal = expenseTotal = balance = housingTotal = groceriesGasTotal = entertainmentTotal = eatingOutTotal = medicalTotal = utilitiesTotal = miscellaneousTotal = 0;
+         loadTransactions();
+    })
+    .catch(error => console.error('Error clearing transactions:', error));
+});
+//Event listener for the form submission
+transactionForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const transaction = getTransactionFromForm();
+    addTransactionhistory(transaction);
+    // After processing, clear the form fields:
+    transactionForm.reset();
 });
 
-//TODO remove transaction in the history
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadTransactions();
+    renderTransactionHistory();
+    calculateTotals();
+});
+
+//TODO need to refactor local storage code for the new API code
+//TODO remove transaction in the history this will need to consider a unique id need to think about how get that from a user hitting delete
+
+
 //TODO Incorrect values for all or formatted values only for date
 //TODO API+BACKEND(Node.js + Express)/GRAPH(Chart.js)/DATABASE
 //TODO Transition some front-end to react or typescript
