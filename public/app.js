@@ -151,13 +151,28 @@ function getTransactionFromForm() {
  */
 function renderTransactionHistory() {
     const transactionList = document.getElementById('transactionList'); 
-    transactionList.innerHTML = '';
-    transactions.forEach((transaction, index) => {
+    transactionList.innerHTML = ''; // Clear any previous content
+
+    // Loop through every transaction in the transactions array
+    transactions.forEach(transaction => {
+        // Create a new list item element to display this transaction's details
         const li = document.createElement('li');
         li.textContent = `${transaction.date} | ${transaction.category} | ${transaction.description} | $${transaction.amount}`;
+
+        // Create a Delete button for the transaction
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        // When this button is clicked, it will call deleteTransaction()
+        // and pass the unique id of the current transaction
+        deleteBtn.addEventListener('click', () => {
+            deleteTransaction(transaction.id);
+        });
+
+        // Append the delete button to the list item
+        li.appendChild(deleteBtn);
+        // Append the list item to the transaction list in the DOM
         transactionList.appendChild(li);
     });
-
 } 
 // Example clear button event listener to reset all totals
 clearBtn.addEventListener('click', function(e) {
@@ -191,10 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateTotals();
 });
 
-//TODO need to refactor local storage code for the new API code
-//TODO remove transaction in the history this will need to consider a unique id need to think about how get that from a user hitting delete
-
 
 //TODO Incorrect values for all or formatted values only for date
-//TODO API+BACKEND(Node.js + Express)/GRAPH(Chart.js)/DATABASE
+//TODO API+BACKEND(Node.js + Express)+GRAPH(Chart.js)+DATABASE
 //TODO Transition some front-end to react or typescript
