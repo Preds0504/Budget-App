@@ -207,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-//TODO Incorrect values for all or formatted values only for date
-//TODO API+BACKEND(Node.js + Express)+GRAPH(Chart.js)+DATABASE
-//TODO Transition some front-end to react or typescript
+//TODO API+BACKEND(Node.js + Express)+GRAPH(Chart.js)+DATABASE(SQL)
+//TODO Transition some front-end to react or typescript(Maybe)
+//TODO Make it look nice and reasonable
+//TODO Deplot to GitHub Pages

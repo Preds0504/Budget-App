@@ -1,14 +1,14 @@
 # Budget-App
 
 ## Overview
-Budget-App is a simple budgeting application that allows users to add, view, and delete transactions. It displays totals for various expense categories as well as overall income and balance. The application currently uses an Express.js API with an in-memory database, and serves a front-end built using HTML, CSS, and JavaScript. In a future phase, it can be extended with a persistent database and additional features like transaction graphs and user authentication.
+Budget-App is a simple budgeting application that allows users to add, view, and delete transactions. It calculates totals for various expense categories as well as overall income and balance. The application features a Node.js/Express API with a MySQL database for persistent storage, and a basic front-end built with HTML, CSS, and JavaScript.
 
 ## Features
 - Add new transactions (income or expense)
-- Display a list of transactions
-- Calculate totals for income, each expense category, total expenses, and balance
+- Display a list of transactions with individual delete buttons
+- Calculate totals for income, each expense category, and overall balance
 - Delete individual transactions or clear all transactions
-- API endpoints built with Node.js and Express
+- API endpoints built using Node.js, Express, and Sequelize (with MySQL)
 
 ## Project Structure
 budget-app/ ├── public/ │ ├── index.html # Main HTML file │ ├── app.js # Front-end JavaScript │ └── styles.css # CSS styles ├── server.js # Express API backend ├── package.json # Project metadata and dependencies └── README.md # Project documentation
@@ -42,7 +42,7 @@ DELETE /api/transactions
 Removes all transactions.
 ### Technologies Used
 Front-end: HTML, CSS, JavaScript
-Back-end: Node.js, Express.js
+Back-end: Node.js, Express.js, Sequelize, MySQL
 Unique ID generation: uuid
 ### Future Enhancements
 Integrate a persistent database for storing transactions.
