@@ -13,6 +13,8 @@ let miscellaneousTotal = 0;
 let balance = 0;
 // The transactions array is populated by API calls.
 let transactions = [];
+// Global variable to store the current pie chart instance
+let expensePieChart;
 /**
  * Notes for programmer:
  * When loadTransactions() is called, it makes an HTTP GET request to '/api/transactions'.
@@ -38,6 +40,7 @@ function loadTransactions() {
             transactions = data;
             renderTransactionHistory();
             calculateTotals();
+            renderExpensePieChart(transactions); // Render the chart after loading transactions
         })
         .catch(error => console.error('Error loading transactions:', error));
 }
@@ -198,8 +201,6 @@ transactionForm.addEventListener('submit', function(e) {
     transactionForm.reset();
 });
 
-
-
 document.addEventListener('DOMContentLoaded', function() {
     loadTransactions();
     renderTransactionHistory();
@@ -207,7 +208,85 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+/**
+ * Renders a pie chart using Chart.js to display the percentage distribution
+ * of expense transactions by category.
+ * @param {Array} transactions - An array of all transaction objects.
+ */
+function renderExpensePieChart(transactions) {
+    // Filter the transactions to exclude those with a category of 'income'
+    // so that we only visualize expenses.
+    const expenseTransactions = transactions.filter(transaction => transaction.category !== 'income');
+
+    // Aggregate the total expense amount for each expense category using reduce.
+    // 'acc' is the accumulator object that will hold totals keyed by category.
+    const totalsByCategory = expenseTransactions.reduce((acc, transaction) => {
+        // Retrieve the category for the current expense transaction.
+        const category = transaction.category;
+        // If the category key doesn't exist in acc, initialize it to 0,
+        // then add the current transaction's amount (converting it to a number).
+        acc[category] = (acc[category] || 0) + parseFloat(transaction.amount);
+        // Return the updated accumulator for use in the next iteration.
+        return acc;
+    }, {}); // Start with an empty object.
+
+    // Extract the expense category names to use as labels for the pie chart.
+    const labels = Object.keys(totalsByCategory);
+    // Extract the corresponding total expense amounts to use as data values.
+    const dataValues = Object.values(totalsByCategory);
+
+    // Retrieve the <canvas> element from the DOM by its id 'transactionChart'
+    // and get its 2D drawing context, which is required by Chart.js.
+    const ctx = document.getElementById('transactionChart').getContext('2d');
+
+    // If a pie chart instance already exists, destroy it to avoid duplicates.
+    if (expensePieChart) {
+        expensePieChart.destroy();
+    }
+
+    // Create a new Chart.js pie chart using the updated data.
+    expensePieChart = new Chart(ctx, {
+        type: 'pie', // Set the chart type to 'pie' to show a percentage distribution.
+        data: {
+            labels: labels, // Use the expense categories as the labels (slices).
+            datasets: [{
+                label: 'Expense Distribution', // Title for the dataset.
+                data: dataValues, // The aggregated expense totals used for the pie slices.
+                // Define background colors for each slice.
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',  // Color for the first category
+                    'rgba(54, 162, 235, 0.5)',  // Color for the second category
+                    'rgba(255, 206, 86, 0.5)',  // Color for the third category
+                    'rgba(75, 192, 192, 0.5)',  
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)',
+                    'rgba(100, 200, 100, 0.5)',
+                    'rgba(200, 100, 200, 0.5)'
+                ],
+                // Define border colors for each slice.
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(100, 200, 100, 1)',
+                    'rgba(200, 100, 200, 1)'
+                ],
+                borderWidth: 1 // Set the border width for each pie slice.
+            }]
+        },
+        options: {
+            responsive: true, // Make the chart resize responsively.
+            plugins: {
+                // Additional configuration (e.g., tooltips, legends) can be added here.
+            }
+        }
+    });
+}
+
 //TODO API+BACKEND(Node.js + Express)+GRAPH(Chart.js)+DATABASE(SQL)
-//TODO Transition some front-end to react or typescript(Maybe)
 //TODO Make it look nice and reasonable
 //TODO Deplot to GitHub Pages

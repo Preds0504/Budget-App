@@ -9,6 +9,7 @@ Budget-App is a simple budgeting application that allows users to add, view, and
 - Calculate totals for income, each expense category, and overall balance
 - Delete individual transactions or clear all transactions
 - API endpoints built using Node.js, Express, and Sequelize (with MySQL)
+- Pie Chart to display expense distribution
 
 ## Project Structure
 budget-app/ ├── public/ │ ├── index.html # Main HTML file │ ├── app.js # Front-end JavaScript │ └── styles.css # CSS styles ├── server.js # Express API backend ├── package.json # Project metadata and dependencies └── README.md # Project documentation
@@ -17,6 +18,9 @@ budget-app/ ├── public/ │ ├── index.html # Main HTML file │ ├�
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (includes npm)
+- [MySQL](https://www.mysql.com/) (Community Edition works fine)
+- (Optional) [MySQL Workbench](https://www.mysql.com/products/workbench/) - A graphical tool for managing your MySQL databases.
+- (Optional) [Postman](https://www.postman.com/downloads/) - For testing API endpoints.
 
 ### Installation
 1. Clone the repository:
@@ -41,17 +45,20 @@ Removes a transaction by its unique ID.
 DELETE /api/transactions
 Removes all transactions.
 ### Technologies Used
-Front-end: HTML, CSS, JavaScript
+Front-end: HTML, CSS, JavaScript, Chart.js (for visualizing expense distribution)
 Back-end: Node.js, Express.js, Sequelize, MySQL
+Development & Testing:
 Unique ID generation: uuid
-### Future Enhancements
+MySQL Workbench (optional): For visually managing the database
+Postman (optional): For testing API endpoints manually
+Chart.js Integration
+Future Enhancements
 Integrate a persistent database for storing transactions.
 Add user authentication.
 Implement sorting and filtering of transactions.
-Generate visual graphs for budgeting analytics.
+Generate additional visual graphs for enhanced budgeting analytics.
 ### License
 This project is licensed under the MIT License.
 
 ### Acknowledgments
-Inspired by the need for a simple budgeting tool.
-Built using tutorials on Express.js and modern JavaScript best practices.
+Inspired by the need for a simple budgeting tool, this project was built using tutorials on Express.js, Sequelize, MySQL, Chart.js, and modern JavaScript best practices.
